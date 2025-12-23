@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { Details } from "./components/Details";
 import { List } from "./components/List";
+import { getUsersList, getUserInfo } from "./usersApi";
 
 export type UserProps = {
   id: number;
@@ -18,9 +19,6 @@ export type UserDetailsProps = {
   };
 };
 
-const url =
-  "https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/users.json";
-
 function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -30,50 +28,53 @@ function App() {
   const [infoErrorMessage, setInfoErrorMessage] = useState<string>("");
 
   useEffect(() => {
-    async function getUsers() {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          setListErrorMessage("Ошибка сервера");
-          return;
-        }
-        const result = await response.json();
-        setListErrorMessage("");
-        setList(result);
-      } catch (error) {
-        console.error(error.message);
-        setListErrorMessage("Ошибка сервера");
-      }
-    }
+     const fetchUsers = async () => {
+       try {
+         const response = await getUsersList();
 
-    getUsers();
+         if (!response.ok) {
+           setListErrorMessage("Fetch Error");
+           return;
+         }
+
+         const result = await response.json();
+         setList(result);
+         setListErrorMessage("");
+       } catch {
+         setListErrorMessage("Error fetching list of users. Please check your Internet connection or try later");
+       }
+     };
+
+     fetchUsers();
   }, []);
 
   useEffect(() => {
     if (selectedId === null) return;
 
-    async function getUsersDetails(id: number) {
-      setLoading(true);
-      const url = `https://raw.githubusercontent.com/netology-code/ra16-homeworks/master/hooks-context/use-effect/data/${id}.json`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          setLoading(false);
-          setInfoErrorMessage("Ошибка сервера. Попробуйте позже.");
-          return;
-        }
-        const result = await response.json();
-        setInfoErrorMessage("");
-        setInfo(result);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error(error.message);
-        setInfoErrorMessage("Ошибка сервера. Попробуйте позже.");
-      }
-    }
+     const fetchUserInfo = async () => {
+       try {
+         setLoading(true);
 
-    getUsersDetails(selectedId);
+         const response = await getUserInfo(selectedId);
+
+         if (!response.ok) {
+           setInfoErrorMessage("Fetch Error");
+           return;
+         }
+
+         const result = await response.json();
+         setInfo(result);
+         setInfoErrorMessage("");
+       } catch {
+         setInfoErrorMessage(
+           "Error fetching user's details. Please check your Internet connection or try later"
+         );
+       } finally {
+         setLoading(false);
+       }
+     };
+
+     fetchUserInfo();
   }, [selectedId]);
 
   const handleSelect = (id: number) => {
