@@ -1,0 +1,60 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  justify-content: center;
+  align-items: top;
+}
+
+.right-block {
+  width: 311px;
+}
+
+.user-card {
+  border: 1px solid rgb(207, 207, 207);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.name {
+  padding: 10px;
+}
+
+.details-list {
+  padding: 0;
+}
+
+.detail-item {
+  list-style: none;
+  padding: 10px;
+}
+
+.detail-item:not(:last-child) {
+  border-bottom: 1px solid rgb(207, 207, 207);
+}
+
+.detail-text {
+  margin: 0;
+}
+
+.loading-icon {
+  margin: 14px;
+  width: 30px;
+  height: 30px;
+}
+
+.error-message {
+  color: red;
+}
